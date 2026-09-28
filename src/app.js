@@ -2,11 +2,15 @@ import express from "express";
 import { setServers } from "node:dns/promises";
 import connectDB from "./config/db.js";
 import ENV from "./config/env.js";
+import linksRouter from "./routes/links.route.js";
+import { errorHandler, notFound } from "./middlewares/error.middleware.js";
 
 setServers(["1.1.1.1", "8.8.8.8"]);
 
 const app = express();
 app.use(express.json());
+
+app.use("/api/v1/links", linksRouter);
 
 //api health check
 app.use("/api/v1/health", (req, res) => {
@@ -18,6 +22,9 @@ app.use("/api/v1/health", (req, res) => {
     status: "OK",
   });
 });
+
+app.use(notFound);
+app.use(errorHandler);
 
 const startServer = async () => {
   try {
