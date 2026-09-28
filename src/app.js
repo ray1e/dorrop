@@ -8,6 +8,17 @@ setServers(["1.1.1.1", "8.8.8.8"]);
 const app = express();
 app.use(express.json());
 
+//api health check
+app.use("/api/v1/health", (req, res) => {
+  res.status(200).json({
+    message: "API is running",
+    version: "1.0.0",
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+    status: "OK",
+  });
+});
+
 const startServer = async () => {
   try {
     const conn = await connectDB();
