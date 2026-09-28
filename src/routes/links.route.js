@@ -1,8 +1,10 @@
 import { Router } from "express";
-import { shortenUrl } from "../controllers/link/link.controller.js";
+import { shortenUrl, redirectToOriginal } from "../controllers/link/link.controller.js";
 
 const linksRouter = Router();
 
-linksRouter.post("/", shortenUrl)
+linksRouter.post("/", shortenUrl);
+
+linksRouter.get("/:hash", redirectToOriginal)
 
 export default linksRouter;

@@ -10,7 +10,7 @@ export const shortenUrl = async (longUrl) => {
   const counter = await Counter.findByIdAndUpdate(
     "links",
     { $inc: { seq: 1 } },
-    { returnDocument: after, upsert: true }
+    { returnDocument: "after", upsert: true }
   );
 
   //convert count to base62
@@ -19,8 +19,15 @@ export const shortenUrl = async (longUrl) => {
   //convert encoded to random 6 digit hash
   const hash = sqids.encode([encoded]); //bMZn4Y
 
-  const shortUrl = `https://dorrop.ly/${hash}`;
+  const shortUrl = `http://localhost:5000/api/v1/links/${hash}`;
 
   const link = await Link.create({ shortUrl, longUrl });
   return link;
+};
+
+export const redirectToOriginal = async (hash) => {
+  const longUrl = await Link.findOne({
+    shortUrl: `http://localhost:5000/api/v1/links/${hash}`,
+  }).select("longUrl -_id").lean();  //returns an object
+  return longUrl.longUrl;
 };

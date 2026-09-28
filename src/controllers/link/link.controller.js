@@ -1,4 +1,6 @@
-import { shortenUrl as shortenUrlService } from "../../services/link.services.js";
+import { shortenUrl as shortenUrlService,
+    redirectToOriginal as redirectToOriginalService 
+ } from "../../services/link.services.js";
 
 export const shortenUrl = async (req, res, next) => {
   try {
@@ -13,3 +15,14 @@ export const shortenUrl = async (req, res, next) => {
     next(error);
   }
 };
+
+export const redirectToOriginal = async (req, res, next) => {
+    try {
+        const {hash} = req.params;
+        const longUrl = await redirectToOriginalService(hash)
+        //res.json({shortlink: shortUrl});
+        res.redirect(301, longUrl);
+    } catch (error){
+        next(error)
+    }
+}
