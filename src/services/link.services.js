@@ -18,21 +18,31 @@ export const shortenUrl = async (longUrl) => {
 
   const shortUrl = `http://localhost:5000/api/v1/links/${hash}`;
 
-  const link = await Link.create({ shortUrl, longUrl });
+  // if the orignial url does not exist create a new document
+  // if it exists add the short url to that document
+  const link = await Link.findOneAndUpdate(
+    { longUrl },
+    {
+      $addToSet: { shortUrls: shortUrl },
+      $setOnInsert: { longUrl },
+    },
+    { upsert: true, runValidators: "true", returnDocument: "after" }
+  );
+
   return link;
 };
 
 export const redirectToOriginal = async (hash) => {
   const longUrl = await Link.findOne({
-    shortUrl: `http://localhost:5000/api/v1/links/${hash}`,
+    shortUrls: `http://localhost:5000/api/v1/links/${hash}`,
   })
     .select("longUrl -_id")
     .lean(); //returns an object
-  
+
   if (!longUrl) {
     const error = new Error("Page Not Found");
     error.statusCode = 404;
-    throw(error);
+    throw error;
   }
   return longUrl.longUrl;
 };

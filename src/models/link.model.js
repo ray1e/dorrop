@@ -2,12 +2,12 @@ import {Schema, model} from "mongoose";
 
 const linkSchema = new Schema(
     {
-        shortUrl: {
+        shortUrls: [{
             type: String,
             required: true,
             unique: true,
             trim: true
-        },
+        }],
         longUrl: {
             type: String,
             required: true,
