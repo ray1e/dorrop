@@ -1,7 +1,6 @@
-import base62 from "base62";
 import Sqids from "sqids";
-import Link from "../models/link.model.js";
 import Counter from "../models/counter.model.js";
+import Link from "../models/link.model.js";
 
 const sqids = new Sqids({ minLength: 6 });
 
@@ -12,12 +11,10 @@ export const shortenUrl = async (longUrl) => {
     { $inc: { seq: 1 } },
     { returnDocument: "after", upsert: true }
   );
+  const number = Array.from(String(counter?.seq), Number);
 
-  //convert count to base62
-  const encoded = base62.encode(counter?.seq); //0
-
-  //convert encoded to random 6 digit hash
-  const hash = sqids.encode([encoded]); //bMZn4Y
+  //convert count digit(s) to random 6 digit hash
+  const hash = sqids.encode(number); //bMZn4Y
 
   const shortUrl = `http://localhost:5000/api/v1/links/${hash}`;
 
@@ -28,6 +25,8 @@ export const shortenUrl = async (longUrl) => {
 export const redirectToOriginal = async (hash) => {
   const longUrl = await Link.findOne({
     shortUrl: `http://localhost:5000/api/v1/links/${hash}`,
-  }).select("longUrl -_id").lean();  //returns an object
+  })
+    .select("longUrl -_id")
+    .lean(); //returns an object
   return longUrl.longUrl;
 };
