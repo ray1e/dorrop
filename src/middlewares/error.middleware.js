@@ -11,7 +11,8 @@ export const errorHandler = (error, req, res, next) => {
     error.statusCode || res.statusCode === 200 ? 500 : res.statusCode;
   res.status(statusCode).json({
     message: error.message,
-    stack:  ENV.NODE_ENV === "production" ? null : error.stack,
+    details: error?.details,
+    stack: ENV.NODE_ENV === "production" ? null : error.stack,
   });
-  next(); 
+  next();
 };
