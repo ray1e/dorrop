@@ -7,17 +7,15 @@ A URL shortener service built with Node.js and Express. Dorrop generates compact
 - Generate short, unique URL codes
 - MongoDB-backed URL storage
 - Express.js REST API
-- Base62 and sqids encoding support
-- Environment configuration with dotenv
+- sqids encoding support
 
 ## Tech Stack
 
 - **Runtime:** Node.js
 - **Framework:** Express
 - **Database:** MongoDB (via Mongoose)
-- **Encoding:** sqids, base62
+- **Encoding:** sqids
 - **Validation:** Zod
-- **Development:** Nodemon, ESLint, Prettier
 
 ## Getting Started
 
