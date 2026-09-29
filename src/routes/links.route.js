@@ -1,10 +1,15 @@
 import { Router } from "express";
-import { shortenUrl, redirectToOriginal } from "../controllers/link/link.controller.js";
+import {
+  redirectToOriginal,
+  shortenUrl,
+} from "../controllers/link/link.controller.js";
+import { validate } from "../middlewares/validation.middleware.js";
+import { linkSchema } from "../schemas/link.schema.js";
 
 const linksRouter = Router();
 
-linksRouter.post("/", shortenUrl);
+linksRouter.post("/", validate({ body: linkSchema }), shortenUrl);
 
-linksRouter.get("/:hash", redirectToOriginal)
+linksRouter.get("/:hash", redirectToOriginal);
 
 export default linksRouter;
