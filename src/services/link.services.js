@@ -9,7 +9,7 @@ export const shortenUrl = async (longUrl) => {
   const counter = await Counter.findByIdAndUpdate(
     "links",
     { $inc: { seq: 1 } },
-    { returnDocument: "after", upsert: true }
+    { returnDocument: "after", upsert: true, runValidators: true }
   );
   const number = Array.from(String(counter?.seq), Number);
 
@@ -28,5 +28,11 @@ export const redirectToOriginal = async (hash) => {
   })
     .select("longUrl -_id")
     .lean(); //returns an object
+  
+  if (!longUrl) {
+    const error = new Error("Page Not Found");
+    error.statusCode = 404;
+    throw(error);
+  }
   return longUrl.longUrl;
 };
